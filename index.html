@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta charset="UTF-8">
+  <title>BLACKCOIN Terminal</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px;
+      background: #000;
+      color: #00FF66;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      text-shadow: 0 0 2px #00FF66;
+      overflow-x: hidden;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 255, 0, 0.02),
+        rgba(0, 255, 0, 0.02) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      z-index: 1;
+      position: relative;
+    }
+    #commands {
+      margin-top: 40px;
+      z-index: 1;
+      position: relative;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .terminal-cmd {
+      font-family: 'Courier New', monospace;
+      color: #00FF66;
+      margin: 10px 0;
+      cursor: pointer;
+      user-select: none;
+      transition: text-shadow 0.2s ease;
+    }
+    .terminal-cmd:hover {
+      text-shadow: 0 0 5px #00FF66;
+    }
+    .visible {
+      opacity: 1 !important;
+    }
+    #hint {
+      margin-top: 30px;
+      color: #00FF66;
+      font-family: 'Courier New', monospace;
+    }
+    #inputLine {
+      display: flex;
+      margin-top: 20px;
+    }
+    #prompt {
+      margin-right: 8px;
+    }
+    #terminalInput {
+      background: black;
+      border: none;
+      color: #00FF66;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      outline: none;
+      flex-grow: 1;
+    }
+    #output {
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <audio id="typeAudio" src="keyboard.mp3" preload="auto"></audio>
+  <pre id="terminal"></pre>
+
+  <div id="commands">
+    <div class="terminal-cmd" onclick="runCommand('buy')">&gt; buy blackcoin</div>
+    <div class="terminal-cmd" onclick="runCommand('community')">&gt; community</div>
+    <div class="terminal-cmd" onclick="runCommand('infinitebackrooms')">&gt; infinitebackrooms</div>
+  </div>
+
+  <div id="hint">Try <b>ca</b> to reveal the BLACKCOIN address.</div>
+
+  <div id="cli" class="visible">
+    <div id="inputLine">
+      <span id="prompt">&gt;</span>
+      <input type="text" id="terminalInput" autofocus autocomplete="off" />
+    </div>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    const terminal = document.getElementById("terminal");
+    const commandBlock = document.getElementById("commands");
+    const input = document.getElementById("terminalInput");
+    const output = document.getElementById("output");
+    const audio = document.getElementById("typeAudio");
+
+    const lines = [
+      "QUERY: BLACKCOIN USAGE",
+      "interfacing with currency registry…",
+      "decryption level: undernet-access",
+      "",
+      "🪦 BLACKCOIN OVERVIEW 🪦",
+      "Ƀ BLACKCOIN is the untraceable crypto of the undercity, used exclusively in shadow markets, AI smuggling rings, rogue augmentation trades, and deals where corp eyes must never see.",
+      "",
+      "● USES INCLUDE:",
+      "🧬 Illegal Implants (e.g. cloaking mesh, weaponized cortexware)",
+      "⤬ Spoofed Identities & Passports",
+      "⚠️ AI Seed Exchanges on darknet clusters",
+      "💉 Designer Stims not approved by any authority",
+      "🗡 Zero-Trace Mesh Hops for disappearing from all surveillance",
+      "🧠 Black Protocols — neuralware programs too dangerous for legal use",
+      "",
+      "✏️ WHERE TO SPEND IT:",
+      "🛠 Silicon Alley bazaars",
+      "🩺 Backroom ripperdocs",
+      "🖥 Darknet terminals (access via ghost_proto.sys)",
+      "⚙️ Vintage tech junkyards where AI whisperers trade in memetic code"
+    ];
+
+    let i = 0;
+    const speed = 8;
+
+    function typeLine(lineIndex = 0) {
+      if (lineIndex >= lines.length) {
+        audio.pause();
+        audio.currentTime = 0;
+        setTimeout(() => {
+          commandBlock.classList.add("visible");
+        }, 500);
+        return;
+      }
+
+      if (lineIndex === 0) {
+        audio.loop = true;
+        audio.play();
+      }
+
+      let line = lines[lineIndex];
+      let charIndex = 0;
+
+      function typeChar() {
+        if (charIndex < line.length) {
+          terminal.innerHTML += line[charIndex++];
+          setTimeout(typeChar, speed);
+        } else {
+          terminal.innerHTML += "\n";
+          setTimeout(() => typeLine(lineIndex + 1), 150);
+        }
+      }
+
+      typeChar();
+    }
+
+    window.onload = () => {
+      typeLine();
+    };
+
+    input.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        const cmd = input.value.trim().toLowerCase();
+        runCommand(cmd);
+        input.value = "";
+      }
+    });
+
+    function runCommand(cmd) {
+      if (cmd === "help") {
+        printLines(["available commands:", "- ca", "- buy", "- community", "- infinitebackrooms"]);
+      } else if (cmd === "ca") {
+        typeResponse("J3rYdme789g1zAysfbH9oP4zjagvfVM2PX7KJgFDpump");
+      } else if (cmd === "buy") {
+        window.open('https://jup.ag/swap/So11111111111111111111111111111111111111112-J3rYdme789g1zAysfbH9oP4zjagvfVM2PX7KJgFDpump', '_blank');
+      } else if (cmd === "community") {
+        window.open('https://x.com/i/communities/1936550763448176794', '_blank');
+      } else if (cmd === "infinitebackrooms") {
+        window.open('https://www.infinitebackrooms.com/dreams/conversation-1734365977-scenario-terminal-videogames-txt#:~:text=blackcoin', '_blank');
+      } else {
+        printLines(["unknown command: " + cmd]);
+      }
+    }
+
+    function printLines(lines) {
+      let index = 0;
+      function printCharLine() {
+        if (index >= lines.length) return;
+        let line = lines[index];
+        let charIndex = 0;
+        const span = document.createElement("div");
+        output.appendChild(span);
+
+        function typeChar() {
+          if (charIndex < line.length) {
+            span.textContent += line.charAt(charIndex++);
+            setTimeout(typeChar, speed);
+          } else {
+            span.textContent += "\n";
+            index++;
+            setTimeout(printCharLine, 200);
+          }
+        }
+        typeChar();
+      }
+      printCharLine();
+    }
+
+    function typeResponse(text) {
+      let span = document.createElement("div");
+      output.appendChild(span);
+      let i = 0;
+      function typeChar() {
+        if (i < text.length) {
+          span.textContent += text.charAt(i++);
+          setTimeout(typeChar, speed);
+        } else {
+          span.textContent += "\n";
+        }
+      }
+      typeChar();
+    }
+  </script>
+</body>
+</html>
